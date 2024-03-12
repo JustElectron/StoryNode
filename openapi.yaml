@@ -1,0 +1,210 @@
+openapi: 3.0.3
+info:
+  title: StoryNode API
+  description: |
+    Something special
+
+  version: 0.0.1
+
+servers:
+  - url: http://localhost:8000
+tags:
+  - name: stories
+    description: Everything about your stories
+
+paths:
+  /storyline:
+    get:
+      tags: [stories]
+      operationId: GetStorylineList
+      summary: Get a list of all storylines.
+      description: Get a list of all stories
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/storyline'
+    
+    post:
+      summary: Create a new storyline.
+      operationId: CreateStoryline
+      tags: [stories]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/storyline'
+      responses:
+        201:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/storyline'
+    
+  /storyline/{storyId}:
+    get:
+      summary: Get a single storylines.
+      operationId: GetStorylineById
+      tags: [stories]
+      parameters:
+        - in: path
+          name: storyId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the storyline to get
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/storyline'
+        404:
+          description: Storyline not found
+
+    put:
+      summary: Update an existing storyline.
+      operationId: UpdateStoryline
+      tags: [stories]
+      parameters:
+        - in: path
+          name: storyId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the storyline to get
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/storyline'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/storyline'
+        404:
+          description: Storyline not found
+    
+    delete:
+      summary: Delete a storyline.
+      operationId: DeleteStoryline
+      tags: [stories]
+      parameters:
+        - in: path
+          name: storyId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the storyline to get
+      responses:
+        204:
+          description: Storyline was deleted.
+        404:
+          description: Storyline not found
+
+  /storynode:
+    get:
+      summary: Get a list of storynodes.
+      operationId: GetStoryNodeList
+      parameters:
+        - in: query
+          name: nodeId
+          schema:
+            type: array
+            items:
+              type: integer
+          required: false
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/storyNode'
+    post:
+      summary: Create a new storynode.
+      operationId: CreateStoryNode
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/storyNode'
+      responses:
+        201:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/storyNode'
+
+
+components:
+  schemas:
+    id:
+      type: integer
+  
+    storyline:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/id'
+        title:
+          type: string
+        description:
+          type: string
+        ownerId:
+          type: integer
+        asigneeIds:
+          type: array
+          items:
+            type: integer
+        startNode:
+          type: string
+          format: uri
+          example: '/storynode/1'
+        storyNodeIds:
+          type: array
+          items:
+            type: integer
+
+    
+    storyNode:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/id'
+        name:
+          type: string
+        text:
+          type: string
+        nodeType:
+          type: string
+          enum: ['actionNode', 'textnode']
+        nodeActions:
+          type: array
+          nullable: true
+          items:
+            type: string
+        prevNode:
+          nullable: true
+          type: string
+          format: uri
+          example: '/storynode/1'
+        nextNode:
+          nullable: true
+          type: string
+          format: uri
+          example: '/storynode/2'
+          
