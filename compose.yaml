@@ -9,7 +9,6 @@ services:
         - action: rebuild
           path: package.json
     volumes:
-      - ./backend:/app
-      - /app/node_modules
+      - ./backend/src:/app/src
     ports:
       - 3000:3000

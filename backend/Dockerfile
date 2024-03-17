@@ -7,6 +7,8 @@ COPY --chown=node:node package*.json ./
 
 RUN npm install
 
+COPY --chown=node:node .eslintrc.js nest-cli.json openapi.yaml tsconfig*.json ./
+
 COPY --chown=node:node . .
 
 CMD [ "dumb-init", "npm", "run", "start:dev" ]
