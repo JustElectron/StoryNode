@@ -4,6 +4,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import { parse } from 'yaml';
 import { AppModule } from './app.module';
+import "reflect-metadata"
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
