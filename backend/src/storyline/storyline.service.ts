@@ -1,26 +1,41 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Storyline } from './entities/storyline.entity';
 import { CreateStorylineDto } from './dto/create-storyline.dto';
 import { UpdateStorylineDto } from './dto/update-storyline.dto';
 
 @Injectable()
 export class StorylineService {
+  constructor(
+    @InjectRepository(Storyline) private storyLineRepository: Repository<Storyline>
+    ) {}
+
   create(createStorylineDto: CreateStorylineDto) {
-    return 'This action adds a new storyline';
+    const newStoryLine = this.storyLineRepository.create(createStorylineDto);
+    return this.storyLineRepository.save(newStoryLine);
   }
 
   findAll() {
-    return `This action returns all storyline`;
+    return this.storyLineRepository.find();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} storyline`;
+    return this.storyLineRepository.findOneBy({id: id});
   }
 
   update(id: number, updateStorylineDto: UpdateStorylineDto) {
-    return `This action updates a #${id} storyline`;
+    return this.storyLineRepository.update(id, updateStorylineDto)
+      .then(() => {return this.findOne(id)});
   }
 
   remove(id: number) {
-    return `This action removes a #${id} storyline`;
+    return this.findOne(id)
+      .then ((val) => {
+        if (!val) {
+          return val;
+        }
+        return this.storyLineRepository.remove(val)
+      })
   }
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, NotFoundException, Put, HttpCode, HttpStatus } from '@nestjs/common';
 import { StorylineService } from './storyline.service';
 import { CreateStorylineDto } from './dto/create-storyline.dto';
 import { UpdateStorylineDto } from './dto/update-storyline.dto';
@@ -19,16 +19,35 @@ export class StorylineController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.storylineService.findOne(+id);
+    return this.storylineService.findOne(+id)
+      .then((val) => {
+        if (!val){
+          throw new NotFoundException(`A storyline with ID ${id} was not found!`);
+        }
+        return val;
+      });
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateStorylineDto: UpdateStorylineDto) {
-    return this.storylineService.update(+id, updateStorylineDto);
+    return this.storylineService.update(+id, updateStorylineDto)
+      .then((val) => {
+        if (!val){
+          throw new NotFoundException(`A storyline with ID ${id} was not found!`);
+        }
+        return val;
+      });
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) {
-    return this.storylineService.remove(+id);
+    return this.storylineService.remove(+id)
+      .then((val) => {
+        if (!val){
+          throw new NotFoundException(`A storyline with ID ${id} was not found!`);
+        }
+        return;
+      });
   }
 }
