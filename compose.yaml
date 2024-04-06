@@ -10,5 +10,6 @@ services:
           path: package.json
     volumes:
       - ./backend/src:/app/src
+      - ./backend/openapi.yaml:/app/openapi.yaml
     ports:
       - 3000:3000
