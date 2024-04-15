@@ -4,12 +4,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { StorylineModule } from './storyline/storyline.module';
 import { StorynodeModule } from './storynode/storynode.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
     DatabaseModule,
     StorylineModule,
-    StorynodeModule
+    StorynodeModule,
+    UsersModule
   ],
   controllers: [AppController],
   providers: [AppService],

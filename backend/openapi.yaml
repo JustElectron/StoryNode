@@ -186,6 +186,49 @@ paths:
         404:
           description: Not found
 
+  /users:
+    get:
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/users'
+
+    delete:
+      responses:
+        200:
+          description: Ok
+
 components:
   parameters:
     storyId:
@@ -207,6 +250,18 @@ components:
   schemas:
     id:
       type: integer
+
+    user:
+      type: object
+      properties:
+        displayName:
+          type: string
+        email:
+          type: string
+          example: user@test.com
+        password:
+          type: string
+          writeOnly: true
 
     storyline:
       type: object
