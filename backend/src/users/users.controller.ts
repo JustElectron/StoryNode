@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseInterceptors, ClassSerializerInterceptor, Put, NotFoundException, HttpCode, HttpStatus } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -22,17 +22,36 @@ export class UsersController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+    return this.usersService.findOne(id)
+      .then((val) => {
+        if (!val){
+          throw new NotFoundException(`A user with ID ${id} was not found!`);
+        }
+        return val;
+      });
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+    return this.usersService.update(id, updateUserDto)
+      .then((val) => {
+        if (!val){
+          throw new NotFoundException(`A user with ID ${id} was not found!`);
+        }
+        return val;
+      });
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+    return this.usersService.remove(id)
+      .then((val) => {
+        if (!val){
+          throw new NotFoundException(`A user with ID ${id} was not found!`);
+        }
+        return;
+      });
   }
 }

@@ -265,7 +265,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/updateUser'
+              $ref: '#/components/schemas/user'
       responses:
         200:
           description: Ok
@@ -343,24 +343,6 @@ components:
           format: email
         password:
           $ref: '#/components/schemas/password'
-
-    updateUser:
-      type: object
-      properties:
-        userId:
-          $ref: '#/components/schemas/uuid'
-        displayName:
-          type: string
-        email:
-          type: string
-          format: email
-        currentPassword:
-          $ref: '#/components/schemas/password'
-          required: true
-        newPassword:
-          $ref: '#/components/schemas/password'
-          required: true
-
 
     storyline:
       type: object

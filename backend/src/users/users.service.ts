@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
+import { Injectable, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -13,9 +13,8 @@ export class UsersService {
   ){}
 
   create(createUserDto: CreateUserDto) {
-    const newUser = this.userRepository.create({...createUserDto,
-      passwordHash: bcrypt.hashSync(createUserDto.password, 10)
-    })
+    createUserDto.password = bcrypt.hashSync(createUserDto.password, 10);
+    const newUser = this.userRepository.create(createUserDto)
     return this.userRepository.save(newUser);
   }
 
@@ -23,15 +22,25 @@ export class UsersService {
     return this.userRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  findOne(id: string) {
+    return this.userRepository.findOneBy({id: id});
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  update(id: string, updateUserDto: UpdateUserDto) {
+    if (updateUserDto.password) {
+      updateUserDto.password = bcrypt.hashSync(updateUserDto.password, 10)
+    }
+    return this.userRepository.update(id, updateUserDto)
+      .then(() => {return this.findOne(id)});
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  remove(id: string) {
+    return this.findOne(id)
+      .then ((user) => {
+        if (!user) {
+          return user;
+        }
+        return this.userRepository.remove(user)
+      })
   }
 }
