@@ -1,15 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { CreateStorynodeDto } from './dto/create-storynode.dto';
 import { UpdateStorynodeDto } from './dto/update-storynode.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { StoryNode } from './entities/storynode.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class StorynodeService {
+  constructor(
+    @InjectRepository(StoryNode) private storyNodeRepository: Repository<StoryNode>
+  ) {}
   create(createStorynodeDto: CreateStorynodeDto) {
-    return 'This action adds a new storynode';
+    console.log(createStorynodeDto)
+    const newStoryNode = this.storyNodeRepository.create(createStorynodeDto);
+    console.log(newStoryNode)
+    return this.storyNodeRepository.save(newStoryNode);
   }
 
   findAll() {
-    return `This action returns all storynode`;
+    return this.storyNodeRepository.find();
   }
 
   findOne(id: number) {
