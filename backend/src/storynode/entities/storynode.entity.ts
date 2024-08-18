@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm"
-import { Exclude, Expose } from "class-transformer";
+import { Exclude } from "class-transformer";
 
 export enum NodeTypes {
     TEXT_NODE = "textNode",
@@ -31,39 +31,26 @@ export class StoryNode {
     nodeActions: string[];
 
 
-    @Column({ type: "int", nullable: true })
     @Exclude()
+    @Column({ type: "int", nullable: true, unique: false })
     prevNodeId: number;
 
     @OneToOne(
-        (type) => StoryNode, (storynode) => storynode._nextNode,
+        () => StoryNode, (storynode) => storynode.nextNode,
         { nullable: true }
     )
     @JoinColumn({ name: "prevNodeId" })
-    _prevNode: StoryNode;
+    prevNode: StoryNode;
 
-    @Expose()
-    get prevNode(): string {
-        if (!this._prevNode)
-            return null;
-        return `/storynode/${this._prevNode.id}`;
-    }
-
-    @Column({ type: "int", nullable: true })
     @Exclude()
-    _nextNodeId: number;
+    @Column({ type: "int", nullable: true, unique: false })
+    nextNodeId: number;
 
     @OneToOne(
-        (type) => StoryNode, (storynode) => storynode._prevNode,
-        { nullable: true }
+        () => StoryNode, (storynode) => storynode.prevNode,
+        { nullable: true, cascade: true }
     )
-    @JoinColumn()
-    _nextNode: StoryNode;
+    @JoinColumn({ name: "nextNodeId" })
+    nextNode: StoryNode;
 
-    @Expose()
-    get nextNode(): string {
-        if (!this._nextNode)
-            return null;
-        return `/storynode/${this._nextNode.id}`;
-    }
 }

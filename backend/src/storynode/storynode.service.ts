@@ -11,14 +11,23 @@ export class StorynodeService {
     @InjectRepository(StoryNode) private storyNodeRepository: Repository<StoryNode>
   ) {}
   create(createStorynodeDto: CreateStorynodeDto) {
-    console.log(createStorynodeDto)
     const newStoryNode = this.storyNodeRepository.create(createStorynodeDto);
-    console.log(newStoryNode)
-    return this.storyNodeRepository.save(newStoryNode);
+    return this.storyNodeRepository.save(newStoryNode)
+      .then((newNode) => {
+        if (createStorynodeDto.nextNodeId) {
+          this.storyNodeRepository.findOneBy({id: createStorynodeDto.nextNodeId})
+            .then((nextNode) => {this.storyNodeRepository.update(nextNode.id, {prevNodeId: newNode.id})})
+        }
+        if (createStorynodeDto.prevNodeId) {
+          this.storyNodeRepository.findOneBy({id: createStorynodeDto.prevNodeId})
+            .then((prevNode) => {this.storyNodeRepository.update(prevNode.id, {nextNodeId: newNode.id})})
+        }
+        return newNode
+      });
   }
 
   findAll() {
-    return this.storyNodeRepository.find();
+    return this.storyNodeRepository.find({relations: {prevNode: true, nextNode: true}})
   }
 
   findOne(id: number) {
