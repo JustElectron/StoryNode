@@ -9,7 +9,7 @@ docker compose build
 ## Run docker
 To run the docker containers in foreground:
 ```bash
-docker compose up 
+docker compose up
 ```
 To run the docker containers in background:
 ```bash

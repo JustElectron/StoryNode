@@ -385,13 +385,21 @@ components:
           nullable: true
           items:
             type: string
-        prevNode:
+        prevNodeId:
           nullable: true
+          writeOnly: true
+          type: number
+        prevNode:
+          readOnly: true
           type: string
           format: uri
           example: '/storynode/1'
-        nextNode:
+        nextNodeId:
           nullable: true
+          writeOnly: true
+          type: number
+        nextNode:
+          readOnly: true
           type: string
           format: uri
           example: '/storynode/2'
