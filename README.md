@@ -1,5 +1,7 @@
 # StoryNode
 
+![Build & Test](https://github.com/JustElectron/StoryNode/actions/workflows/node.js.yml/badge.svg)
+
 ## Build docker
 To build the docker containers run:
 ```bash
