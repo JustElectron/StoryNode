@@ -18,9 +18,9 @@ export class CreateStorynodeDto {
 
     @IsInt()
     @IsOptional()
-    prevNodeId: number;
+    prevNodeId?: number;
 
     @IsInt()
     @IsOptional()
-    nextNodeId: number;
+    nextNodeId?: number;
 }
