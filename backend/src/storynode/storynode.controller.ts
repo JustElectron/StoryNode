@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, UseInterceptors, ClassSerializerInterceptor, HttpCode, HttpStatus, NotFoundException } from '@nestjs/common';
 import { StorynodeService } from './storynode.service';
 import { CreateStorynodeDto } from './dto/create-storynode.dto';
 import { UpdateStorynodeDto } from './dto/update-storynode.dto';
@@ -22,17 +22,36 @@ export class StorynodeController {
   @Get(':id')
   @UseInterceptors(ClassSerializerInterceptor)
   findOne(@Param('id') id: string) {
-    return this.storynodeService.findOne(+id);
+    return this.storynodeService.findOne(+id)
+    .then((val) => {
+      if (!val){
+        throw new NotFoundException(`A storyNode with ID ${id} was not found!`);
+      }
+      return val;
+    });
   }
 
   @Put(':id')
   @UseInterceptors(ClassSerializerInterceptor)
   update(@Param('id') id: string, @Body() updateStorynodeDto: UpdateStorynodeDto) {
-    return this.storynodeService.update(+id, updateStorynodeDto);
+    return this.storynodeService.update(+id, updateStorynodeDto)
+    .then((val) => {
+      if (!val){
+        throw new NotFoundException(`A storyNode with ID ${id} was not found!`);
+      }
+      return val;
+    });
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) {
-    return this.storynodeService.remove(+id);
+    return this.storynodeService.remove(+id)
+      .then((val) => {
+        if (!val){
+          throw new NotFoundException(`A storyNode with ID ${id} was not found!`);
+        }
+        return;
+      });
   }
 }
